@@ -45,6 +45,6 @@ class LogMiddleware:
             "url": request.url,
             "path": request.path,
             "method": request.method,
-            'http_state': response.status,
+            'status': response.status,
         }
         logger.info(log_info)
