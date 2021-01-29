@@ -49,8 +49,8 @@ async def user_phone_code(request):
     data_info = response.DataInfo(list_data=list_data)
 
     return response.return_json(data_info=data_info,
-                                message=messages.CodeDict.SUCCESS[0],
-                                status_code=messages.CodeDict.SUCCESS[1])
+                                message=messages.CodeDict.SUCCESS[1],
+                                status_code=messages.CodeDict.SUCCESS[0])
 
 
 @users.post("/register")
@@ -154,14 +154,14 @@ async def user_register(request):
         )
         db_session.add(user)
         db_session.commit()  # 提交
-        return response.return_json(message=messages.CodeDict.SUCCESS[0],
+        return response.return_json(message=messages.CodeDict.SUCCESS[1],
                                     headers={
                                         "Authorization": jwt_token  # JWT Token存储
-                                    }, status_code=messages.CodeDict.SUCCESS[1])
+                                    }, status_code=messages.CodeDict.SUCCESS[0])
     except Exception as DatabaseError:
         db_session.rollback()
-        return response.return_json(message=messages.CodeDict.FAIL[0],
-                                    status_code=messages.CodeDict.FAIL[1])
+        return response.return_json(message=messages.CodeDict.FAIL[1],
+                                    status_code=messages.CodeDict.FAIL[0])
 
 
 @users.post("/login")
@@ -215,13 +215,11 @@ async def user_login(request):
             user_object.last_login_ip = request.ip
             user_object.last_login_datetime = last_login_datetime
             db_session.commit()  # 提交
-            return response.return_json(message=messages.CodeDict.SUCCESS[0], headers={
-                "Authorization": jwt_token  # JWT Token存储
-            }, status_code=messages.CodeDict.SUCCESS[1])
+            return response.return_json(data_info=response.DataInfo(list_data=user_object.get_user()), message=messages.CodeDict.SUCCESS[1], status_code=messages.CodeDict.SUCCESS[0])
         except Exception as error:
             print(error)
             db_session.rollback()  # 回滚
-            return response.return_json(message=messages.CodeDict.FAIL[0],
-                                        status_code=messages.CodeDict.FAIL[1])
+            return response.return_json(message=messages.CodeDict.FAIL[1],
+                                        status_code=messages.CodeDict.FAIL[0])
     else:
         return response.return_json(message="登录失败,账户或者密码错误", status_code=StatusCode.USERNAME_PASSWORD_ERROR)
