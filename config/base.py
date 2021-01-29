@@ -27,7 +27,7 @@ class BaseConfig(object):
     WORKERS = 1
 
     # 跨域相关
-    ENABLE_CORS = False  # 是否启动跨域功能
+    ENABLE_CORS = True  # 是否启动跨域功能
     CORS_SUPPORTS_CREDENTIALS = True
 
     DATABASE = {
