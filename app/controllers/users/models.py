@@ -36,6 +36,21 @@ class UsersModel(UserClass):
 
     __str__ = __repr__
 
+    def get_user(self):
+        return {
+            "id": self.id,
+            "username": self.username,
+            "mobile_phone": self.mobile_phone,
+            "sex": self.sex,
+            "email": self.email,
+            "name": self.name,
+            "access_token": self.access_token,
+            "last_login_ip": self.last_login_ip,
+            "last_login_datetime": self.last_login_datetime.strftime("%Y-%m-%d %H:%M:%S"),
+            "register_date": self.register_date.strftime("%Y-%m-%d"),
+            "status": self.status
+        }
+
     @staticmethod
     def md5_encryption(pwd, salt_list, times=1):
         """
