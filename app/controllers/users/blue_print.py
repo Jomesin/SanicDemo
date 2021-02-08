@@ -14,7 +14,7 @@ users = Blueprint("users", url_prefix="/users")
 
 @users.get("/get_phone_code")
 @decorator.judge_request_json({
-    "phone_number": ("手机号不能为空!", StatusCode.PHONE_NUMBER_EMPTY),
+    "phone_number": ("手机号不能为空!", StatusCode.PHONE_NUMBER_EMPTY)
 }, response.return_json)
 async def user_phone_code(request):
     """
@@ -34,7 +34,7 @@ async def user_phone_code(request):
     # 正则校验手机号
     ret = re.match(r"^1[35678]\d{9}$", phone_number)
     if ret is None:
-        return response.return_json(message="请检查一下手机号是否正确", status_code=200)
+        return response.return_json(message="请检查一下手机号是否正确", status_code=StatusCode.PHONE_NUMBER_ERROR)
 
     # 随机生成6位的手机验证码
     phone_code = "".join(random.sample([x for x in string.digits], 6))
@@ -44,12 +44,7 @@ async def user_phone_code(request):
         await r_conn.select(0)  # 选择手机验证码数据库
         await r_conn.set("phone_number_" + phone_number, phone_code, expire=60 * 15)  # 设置有效期为15分钟
 
-    # 组成返回响应数据结构
-    list_data = {"phone_number": phone_number, "phone_code": phone_code}
-    data_info = response.DataInfo(list_data=list_data)
-
-    return response.return_json(data_info=data_info,
-                                message=messages.CodeDict.SUCCESS[1],
+    return response.return_json(message=messages.CodeDict.SUCCESS[1],
                                 status_code=messages.CodeDict.SUCCESS[0])
 
 
